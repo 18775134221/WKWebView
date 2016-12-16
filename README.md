@@ -120,3 +120,63 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
         [self.delegate userContentController:userContentController didReceiveScriptMessage:message];
     }
 }
+
+
+# 关于session 同步 cookies的问题
+1.基本配置
+#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
+    NSMutableString *cookies = [NSMutableString string];
+    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[cookies copy]
+                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                                      forMainFrameOnly:NO];
+    [userContentController addUserScript:cookieScript];
+    
+    // 一下两个属性是允许H5视屏自动播放,并且全屏,可忽略
+    configuration.allowsInlineMediaPlayback = YES;
+    configuration.mediaPlaybackRequiresUserAction = NO;
+    // 全局使用同一个processPool
+    configuration.processPool = [[WKWebKitSupport sharedSupport] processPool];
+    configuration.userContentController = userContentController;
+#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
+2.保存到本地
+// 在收到响应后，决定是否跳转
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
+    
+    NSLog(@"%@",navigationResponse.response.URL.absoluteString);
+#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
+    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+    // 获取cookie,并设置到本地
+    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
+    for (NSHTTPCookie *cookie in cookies) {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+    }
+#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
+    
+    //允许跳转
+    decisionHandler(WKNavigationResponsePolicyAllow);
+    //不允许跳转
+    //decisionHandler(WKNavigationResponsePolicyCancel);
+}
+
+3.在开始请求时注入
+NSURL *url = [NSURL URLWithString:urlString];
+NSMutableString *cookies = [NSMutableString string];
+NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+// 一般都只需要同步JSESSIONID,可视不同需求自己做更改
+NSString * JSESSIONID;
+// 获取本地所有的Cookie
+NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+    for (NSHTTPCookie * cookie in tmp) {
+        if ([cookie.name isEqualToString:@"JSESSIONID"]) {
+            JSESSIONID = cookie.value;
+            break;
+        }
+    }
+ if (JSESSIONID.length) {
+      // 格式化Cookie
+      [cookies appendFormat:@"JSESSIONID=%@;",JSESSIONID];
+  }
+// 注入Cookie
+[requestObj setValue:cookies forHTTPHeaderField:@"Cookie"];
+// 加载请求
+[self.wk_webView loadRequest:requestObj];
