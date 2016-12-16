@@ -124,7 +124,6 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 
 # 关于session 同步 cookies的问题
 1.基本配置
-#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
     NSMutableString *cookies = [NSMutableString string];
     WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[cookies copy]
                                                          injectionTime:WKUserScriptInjectionTimeAtDocumentStart
@@ -137,20 +136,18 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
     // 全局使用同一个processPool
     configuration.processPool = [[WKWebKitSupport sharedSupport] processPool];
     configuration.userContentController = userContentController;
-#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
+
 2.保存到本地
 // 在收到响应后，决定是否跳转
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
-#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
     NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
     // 获取cookie,并设置到本地
     NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
     for (NSHTTPCookie *cookie in cookies) {
         [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
     }
-#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
     
     //允许跳转
     decisionHandler(WKNavigationResponsePolicyAllow);
