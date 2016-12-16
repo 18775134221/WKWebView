@@ -8,6 +8,7 @@
 
 #import "TestWkwebViewController.h"
 #import "WKDelegateController.h"
+#import "WKWebKitSupport.h"
 
 @interface TestWkwebViewController ()<WKScriptMessageHandler,WKUIDelegate,WKNavigationDelegate,WKDelegate>
 {
@@ -26,8 +27,9 @@
     // 1.配置环境
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc]init];
     userContentController =[[WKUserContentController alloc]init];
-    configuration.userContentController = userContentController;
+//    configuration.userContentController = userContentController;
     wkWebView = [[WKWebView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) configuration:configuration];
+    wkWebView.allowsBackForwardNavigationGestures = YES;
     
     // 2.注册方法（必要设置，不然WKWebView会无法释放）
     WKDelegateController * delegateController = [[WKDelegateController alloc]init];
@@ -37,15 +39,55 @@
     
     [self.view addSubview:wkWebView];
     
+#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
+    NSMutableString *cookies = [NSMutableString string];
+    WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[cookies copy]
+                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentStart
+                                                      forMainFrameOnly:NO];
+    [userContentController addUserScript:cookieScript];
+    
+    // 一下两个属性是允许H5视屏自动播放,并且全屏,可忽略
+    configuration.allowsInlineMediaPlayback = YES;
+    configuration.mediaPlaybackRequiresUserAction = NO;
+    // 全局使用同一个processPool
+    configuration.processPool = [[WKWebKitSupport sharedSupport] processPool];
+    configuration.userContentController = userContentController;
+#warning 关于Cookie同步 WKWebView有自己的缓存机制,如果想同步session需要注意一下几个地方
+  
+    
+#warning 基本使用
     wkWebView.UIDelegate = self;
     wkWebView.navigationDelegate = self;
     
-    NSURL *url = [NSURL URLWithString:@"http://www.baidu.com"];
-    // 根据URL创建请求
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    [request setTimeoutInterval:15];
-    [wkWebView loadRequest:request];
+//    NSURL *url = [NSURL URLWithString:@"http://www.baidu.com"];
+//    // 根据URL创建请求
+//    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+//    [request setTimeoutInterval:15];
+//    [wkWebView loadRequest:request];
     
+    
+#warning 在WKWebView加载请求的时候注入Cookie
+    NSURL *url = [NSURL URLWithString:@"http://www.baidu.com"];
+    NSMutableString *cooki = [NSMutableString string];
+    NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+    // 一般都只需要同步JSESSIONID,可视不同需求自己做更改
+    NSString * JSESSIONID;
+    // 获取本地所有的Cookie
+    NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+    for (NSHTTPCookie * cookie in tmp) {
+        if ([cookie.name isEqualToString:@"JSESSIONID"]) {
+            JSESSIONID = cookie.value;
+            break;
+        }
+    }
+    if (JSESSIONID.length) {
+        // 格式化Cookie
+        [cooki appendFormat:@"JSESSIONID=%@;",JSESSIONID];
+    }
+    // 注入Cookie
+    [requestObj setValue:cooki forHTTPHeaderField:@"Cookie"];
+    [wkWebView loadRequest:requestObj];
+#warning   在WKWebView加载请求的时候注入Cookie
 }
 
 #pragma mark - WKNavigationDelegate 方法较为常用
@@ -73,6 +115,15 @@
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
+#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
+    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+    // 获取cookie,并设置到本地
+    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
+    for (NSHTTPCookie *cookie in cookies) {
+        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
+    }
+#warning 在WKNavigationDelegate代理方法中将cookie设置到本地
+    
     //允许跳转
     decisionHandler(WKNavigationResponsePolicyAllow);
     //不允许跳转
@@ -110,6 +161,7 @@
 - (void)dealloc{
     //这里需要注意，前面增加过的方法一定要remove掉。
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
+    NSLog(@"释放");
 }
 #pragma mark - WKScriptMessageHandler
 - (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{

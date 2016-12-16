@@ -10,6 +10,7 @@
 		040B0F271DFE5590004A877D /* WKDelegateController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040B0F261DFE5590004A877D /* WKDelegateController.m */; };
 		040B0F2B1DFE585E004A877D /* TestWkwebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 040B0F291DFE585E004A877D /* TestWkwebViewController.m */; };
 		040B0F2C1DFE585E004A877D /* TestWkwebViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040B0F2A1DFE585E004A877D /* TestWkwebViewController.xib */; };
+		046EA4441E0393BC00FDCAE6 /* WKWebKitSupport.m in Sources */ = {isa = PBXBuildFile; fileRef = 046EA4431E0393BC00FDCAE6 /* WKWebKitSupport.m */; };
 		0476468D1DFE5321003F918E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0476468C1DFE5321003F918E /* main.m */; };
 		047646901DFE5321003F918E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0476468F1DFE5321003F918E /* AppDelegate.m */; };
 		047646931DFE5321003F918E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 047646921DFE5321003F918E /* ViewController.m */; };
@@ -43,6 +44,8 @@
 		040B0F281DFE585E004A877D /* TestWkwebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestWkwebViewController.h; sourceTree = "<group>"; };
 		040B0F291DFE585E004A877D /* TestWkwebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestWkwebViewController.m; sourceTree = "<group>"; };
 		040B0F2A1DFE585E004A877D /* TestWkwebViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TestWkwebViewController.xib; sourceTree = "<group>"; };
+		046EA4421E0393BC00FDCAE6 /* WKWebKitSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WKWebKitSupport.h; sourceTree = "<group>"; };
+		046EA4431E0393BC00FDCAE6 /* WKWebKitSupport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WKWebKitSupport.m; sourceTree = "<group>"; };
 		047646881DFE5321003F918E /* WKWebViewLearn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WKWebViewLearn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0476468C1DFE5321003F918E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		0476468E1DFE5321003F918E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -123,6 +126,8 @@
 				040B0F281DFE585E004A877D /* TestWkwebViewController.h */,
 				040B0F291DFE585E004A877D /* TestWkwebViewController.m */,
 				040B0F2A1DFE585E004A877D /* TestWkwebViewController.xib */,
+				046EA4421E0393BC00FDCAE6 /* WKWebKitSupport.h */,
+				046EA4431E0393BC00FDCAE6 /* WKWebKitSupport.m */,
 			);
 			path = WKWebViewLearn;
 			sourceTree = "<group>";
@@ -293,6 +298,7 @@
 				040B0F2B1DFE585E004A877D /* TestWkwebViewController.m in Sources */,
 				0476468D1DFE5321003F918E /* main.m in Sources */,
 				040B0F271DFE5590004A877D /* WKDelegateController.m in Sources */,
+				046EA4441E0393BC00FDCAE6 /* WKWebKitSupport.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
