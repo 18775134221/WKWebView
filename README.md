@@ -192,11 +192,8 @@ NSMutableString *cookies = [NSMutableString string];
 NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
 
 // 一般都只需要同步JSESSIONID,可视不同需求自己做更改
-
 NSString * JSESSIONID;
-
 // 获取本地所有的Cookie
-
 NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
     for (NSHTTPCookie * cookie in tmp) {
         if ([cookie.name isEqualToString:@"JSESSIONID"]) {
