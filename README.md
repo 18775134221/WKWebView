@@ -31,27 +31,27 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 # 常用的代理方法
 #pragma mark - WKNavigationDelegate 方法较为常用
 // 页面开始加载时调用
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
+-(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 // 当内容开始返回时调用
-- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
+-(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
     
 }
 // 页面加载完成之后调用
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
+-(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
     
 }
 // 页面加载失败时调用
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
+-(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 // 接收到服务器跳转请求之后调用
-- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
+-(void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 // 在收到响应后，决定是否跳转
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
+-(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
     //允许跳转
@@ -60,7 +60,7 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
     //decisionHandler(WKNavigationResponsePolicyCancel);
 }
 // 在发送请求之前，决定是否跳转
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
+-(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
     
     NSLog(@"%@",navigationAction.request.URL.absoluteString);
     //允许跳转
@@ -71,40 +71,40 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 
 #pragma mark - WKUIDelegate
 // 创建一个新的WebView
-- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
+-(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
     return [[WKWebView alloc]init];
 }
 // 输入框
-- (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
+-(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
     completionHandler(@"http");
 }
 // 确认框
-- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
+-(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
     completionHandler(YES);
 }
 // 警告框
-- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+-(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
     NSLog(@"%@",message);
     completionHandler();
 }
 
-- (void)dealloc{
+-(void)dealloc{
     //这里需要注意，前面增加过的方法一定要remove掉。
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
 }
 #pragma mark - WKScriptMessageHandler
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+-(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
 }
 
 # 新的控制器设置代理（解决不能释放的问题）
 
-#import <UIKit/UIKit.h>
-#import <WebKit/WebKit.h>
+#import<UIKit/UIKit.h>
+#import<WebKit/WebKit.h>
 
 @protocol WKDelegate <NSObject>
 
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
+-(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
 
 @end
 
@@ -115,7 +115,7 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 @end
 
 .m文件中的实现
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+-(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
     if ([self.delegate respondsToSelector:@selector(userContentController:didReceiveScriptMessage:)]) {
         [self.delegate userContentController:userContentController didReceiveScriptMessage:message];
     }
@@ -139,7 +139,7 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 
 2.保存到本地
 // 在收到响应后，决定是否跳转
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
+-(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
     NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
