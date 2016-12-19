@@ -86,35 +86,41 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 // 创建一个新的WebView
 
 -(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
+
     return [[WKWebView alloc]init];
 }
 
 // 输入框
 
 -(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
+
     completionHandler(@"http");
 }
 
 // 确认框
 
 -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
+
     completionHandler(YES);
 }
 
 // 警告框
 
 -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+
     NSLog(@"%@",message);
     completionHandler();
 }
 
 -(void)dealloc{
+
     //这里需要注意，前面增加过的方法一定要remove掉。
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
 }
 
 #pragma mark - WKScriptMessageHandler
 -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
 }
 
@@ -138,6 +144,7 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
 .m文件中的实现
 
 -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+
     if ([self.delegate respondsToSelector:@selector(userContentController:didReceiveScriptMessage:)]) {
         [self.delegate userContentController:userContentController didReceiveScriptMessage:message];
     }
