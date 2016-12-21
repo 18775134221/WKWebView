@@ -246,7 +246,9 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 }
 
 // 警告框
-- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+
+-(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+
     NSLog(@"%@",message);
     //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
@@ -263,7 +265,9 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 }
 
 // 确认框
+
 -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
+
     //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
