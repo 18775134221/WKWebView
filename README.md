@@ -1,6 +1,5 @@
-# WKWebView
-# 基本的使用方法
-WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationDelegate主要处理一些跳转、加载处理操作，WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。
+# 一、基本的使用方法
+介绍：WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationDelegate主要处理一些跳转、加载处理操作，WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。
 
     // 1.配置环境
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc]init];
@@ -124,7 +123,8 @@ WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationD
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
 }
 
-# 新的控制器设置代理（解决不能释放的问题）
+
+# 创建新的控制器设置代理（解决不能释放的问题）
 
 #import<UIKit/UIKit.h>
 #import<WebKit/WebKit.h>
@@ -215,9 +215,8 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
 
-    
     NSLog(@"%@",navigationAction.request.URL.absoluteString);
-#warning 拨打电话
+// 拨打电话
     NSURL *URL = navigationAction.request.URL;
     NSString *scheme = [URL scheme];
     UIApplication *app = [UIApplication sharedApplication];
