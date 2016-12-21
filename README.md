@@ -209,3 +209,72 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 [requestObj setValue:cookies forHTTPHeaderField:@"Cookie"];
 // 加载请求
 [self.wk_webView loadRequest:requestObj];
+
+# 新增拨打电话和弹窗
+// 在发送请求之前，决定是否跳转
+
+-(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
+
+    
+    NSLog(@"%@",navigationAction.request.URL.absoluteString);
+#warning 拨打电话
+    NSURL *URL = navigationAction.request.URL;
+    NSString *scheme = [URL scheme];
+    UIApplication *app = [UIApplication sharedApplication];
+    // 打电话
+    if ([scheme isEqualToString:@"tel"]) {
+        if ([app canOpenURL:URL]) {
+            [app openURL:URL];
+            // 一定要加上这句,否则会打开新页面
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+    // 打开appstore
+    if ([URL.absoluteString containsString:@"ituns.apple.com"]) {
+        if ([app canOpenURL:URL]) {
+            [app openURL:URL];
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+
+    //允许跳转
+    decisionHandler(WKNavigationActionPolicyAllow);
+    //不允许跳转
+    //decisionHandler(WKNavigationActionPolicyCancel);
+}
+
+// 警告框
+- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+    NSLog(@"%@",message);
+    //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        completionHandler();
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+        completionHandler();
+    }]];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+    // 要实现
+//    completionHandler();
+}
+
+// 确认框
+-(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
+    //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        completionHandler(YES);
+    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+        completionHandler(NO);
+    }]];
+    
+    [self presentViewController:alertController animated:YES completion:^{}];
+    
+}
+
+
