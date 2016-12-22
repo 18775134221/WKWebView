@@ -34,6 +34,12 @@
 - (void) setupUI {
     [self setupWKWebView];
     [self setupProgressView];
+    [self setupConfiger];
+}
+
+// 监听网页的加载进度
+- (void) setupConfiger {
+    [wkWebView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void) setupWKWebView {
@@ -41,12 +47,14 @@
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc]init];
     userContentController =[[WKUserContentController alloc]init];
     //    configuration.userContentController = userContentController;
-    wkWebView = [[WKWebView alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) configuration:configuration];
+    wkWebView = [[WKWebView alloc]initWithFrame:self.view.bounds configuration:configuration];
     wkWebView.allowsBackForwardNavigationGestures = YES;
+    
     
     // 2.注册方法（必要设置，不然WKWebView会无法释放）
     WKDelegateController * delegateController = [[WKDelegateController alloc]init];
     delegateController.delegate = self;
+    
     // 有添加一定有移除，成对出现
     [userContentController addScriptMessageHandler:delegateController  name:@"NativeMethod"];
     
@@ -101,29 +109,7 @@
     [requestObj setValue:cooki forHTTPHeaderField:@"Cookie"];
     [wkWebView loadRequest:requestObj];
 #warning   在WKWebView加载请求的时候注入Cookie
-    [wkWebView addObserver:self forKeyPath:@"estimatedProgress" options:NSKeyValueObservingOptionNew context:nil];
-}
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"estimatedProgress"]) {
-        self.progressView.progress = wkWebView.estimatedProgress;
-        if (self.progressView.progress == 1) {
-            /*
-             *添加一个简单的动画，将progressView的Height变为1.4倍，在开始加载网页的代理中会恢复为1.5倍
-             *动画时长0.25s，延时0.3s后开始动画
-             *动画结束后将progressView隐藏
-             */
-            __weak typeof (self)weakSelf = self;
-            [UIView animateWithDuration:0.25f delay:0.3f options:UIViewAnimationOptionCurveEaseOut animations:^{
-                weakSelf.progressView.transform = CGAffineTransformMakeScale(1.0f, 1.4f);
-            } completion:^(BOOL finished) {
-                weakSelf.progressView.hidden = YES;
-                
-            }];
-        }
-    }else{
-        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
 }
 
 - (void) setupProgressView {
@@ -217,15 +203,12 @@
 - (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
     return [[WKWebView alloc]init];
 }
+
 // 输入框
 - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
     completionHandler(@"http");
 }
 
-//// 确认框
-//- (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
-//    completionHandler(YES);
-//}
 
 // 警告框
 - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
@@ -259,15 +242,40 @@
     
 }
 
+
+#pragma mark - WKDelegate Methods
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+    NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
+}
+
+#pragma mark - 进度条KVO的监听方法
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"estimatedProgress"]) {
+        self.progressView.progress = wkWebView.estimatedProgress;
+        if (self.progressView.progress == 1) {
+            /*
+             *添加一个简单的动画，将progressView的Height变为1.4倍，在开始加载网页的代理中会恢复为1.5倍
+             *动画时长0.25s，延时0.3s后开始动画
+             *动画结束后将progressView隐藏
+             */
+            __weak typeof (self)weakSelf = self;
+            [UIView animateWithDuration:0.25f delay:0.3f options:UIViewAnimationOptionCurveEaseOut animations:^{
+                weakSelf.progressView.transform = CGAffineTransformMakeScale(1.0f, 1.4f);
+            } completion:^(BOOL finished) {
+                weakSelf.progressView.hidden = YES;
+                
+            }];
+        }
+    }else{
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 - (void)dealloc{
     //这里需要注意，前面增加过的方法一定要remove掉。
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
     [wkWebView removeObserver:self forKeyPath:@"estimatedProgress"];
     NSLog(@"释放");
-}
-#pragma mark - WKScriptMessageHandler
-- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
-    NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
 }
 
 @end
