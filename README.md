@@ -28,38 +28,39 @@
     
 
 # 常用的代理方法
-#pragma mark - WKNavigationDelegate 方法较为常用
-// 页面开始加载时调用 
+
+- WKNavigationDelegate 方法较为常用
+- 页面开始加载时调用 
 
 -(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-// 当内容开始返回时调用
+- 当内容开始返回时调用
 
 -(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
     
 }
 
-// 页面加载完成之后调用
+- 页面加载完成之后调用
 
 -(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
     
 }
 
-// 页面加载失败时调用
+- 页面加载失败时调用
 
 -(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-// 接收到服务器跳转请求之后调用
+- 接收到服务器跳转请求之后调用
 
 -(void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-// 在收到响应后，决定是否跳转
+- 在收到响应后，决定是否跳转
 
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
@@ -70,7 +71,7 @@
     //decisionHandler(WKNavigationResponsePolicyCancel);
 }
 
-// 在发送请求之前，决定是否跳转
+- 在发送请求之前，决定是否跳转
 
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
     
@@ -81,29 +82,29 @@
     //decisionHandler(WKNavigationActionPolicyCancel);
 }
 
-#pragma mark - WKUIDelegate
-// 创建一个新的WebView
+ - WKUIDelegate
+- 创建一个新的WebView
 
 -(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
 
     return [[WKWebView alloc]init];
 }
 
-// 输入框
+- 输入框
 
 -(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
 
     completionHandler(@"http");
 }
 
-// 确认框
+- 确认框
 
 -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
 
     completionHandler(YES);
 }
 
-// 警告框
+- 警告框
 
 -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
 
@@ -117,7 +118,7 @@
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
 }
 
-#pragma mark - WKScriptMessageHandler
+- WKScriptMessageHandler
 -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
 
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
@@ -125,9 +126,6 @@
 
 
 # 创建新的控制器设置代理（解决不能释放的问题）
-
-#import<UIKit/UIKit.h>
-#import<WebKit/WebKit.h>
 
 @protocol WKDelegate <NSObject>
 
@@ -152,7 +150,8 @@
 
 
 # 关于session 同步 cookies的问题
-1.基本配置
+
+- 1.基本配置
     NSMutableString *cookies = [NSMutableString string];
     WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[cookies copy]
                                                          injectionTime:WKUserScriptInjectionTimeAtDocumentStart
@@ -166,7 +165,7 @@
     configuration.processPool = [[WKWebKitSupport sharedSupport] processPool];
     configuration.userContentController = userContentController;
 
-2.保存到本地
+- 2.保存到本地
 // 在收到响应后，决定是否跳转
 
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
@@ -185,7 +184,7 @@
     //decisionHandler(WKNavigationResponsePolicyCancel);
 }
 
-3.在开始请求时注入
+- 3.在开始请求时注入
 
 NSURL *url = [NSURL URLWithString:urlString];
 NSMutableString *cookies = [NSMutableString string];
