@@ -1,5 +1,6 @@
 # 一、基本的使用方法
-介绍：WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。WKNavigationDelegate主要处理一些跳转、加载处理操作，WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。
+
+<p>介绍：WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。<br>WKNavigationDelegate主要处理一些跳转、加载处理操作，WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。</p>
 
     // 1.配置环境
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc]init];
