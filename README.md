@@ -1,6 +1,6 @@
 # 一、基本的使用方法
 
-<p>介绍：WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。<br>WKNavigationDelegate主要处理一些跳转、加载处理操作，WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。</p>
+<p>介绍：WKWebView有两个delegate,WKUIDelegate 和 WKNavigationDelegate。<br>WKNavigationDelegate主要处理一些跳转、加载处理操作，<br>WKUIDelegate主要处理JS脚本，确认框，警告框等。因此WKNavigationDelegate更加常用。</p>
 
     // 1.配置环境
     WKWebViewConfiguration * configuration = [[WKWebViewConfiguration alloc]init];
@@ -25,44 +25,34 @@
     [request setTimeoutInterval:15];
     [wkWebView loadRequest:request];
     
-    
-    
-
-# 常用的代理方法
-
-- WKNavigationDelegate 方法较为常用
-- 页面开始加载时调用 
-
+## 常用的代理方法
+### WKNavigationDelegate 方法较为常用
+#### 页面开始加载时调用 
 -(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-- 当内容开始返回时调用
-
+#### 当内容开始返回时调用
 -(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
     
 }
 
-- 页面加载完成之后调用
-
+#### 页面加载完成之后调用
 -(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
     
 }
 
-- 页面加载失败时调用
-
+#### 页面加载失败时调用
 -(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-- 接收到服务器跳转请求之后调用
-
+#### 接收到服务器跳转请求之后调用
 -(void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
     
 }
 
-- 在收到响应后，决定是否跳转
-
+#### 在收到响应后，决定是否跳转
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
@@ -72,8 +62,7 @@
     //decisionHandler(WKNavigationResponsePolicyCancel);
 }
 
-- 在发送请求之前，决定是否跳转
-
+#### 在发送请求之前，决定是否跳转
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
     
     NSLog(@"%@",navigationAction.request.URL.absoluteString);
@@ -83,30 +72,26 @@
     //decisionHandler(WKNavigationActionPolicyCancel);
 }
 
- - WKUIDelegate
-- 创建一个新的WebView
-
+### WKUIDelegate
+#### 创建一个新的WebView
 -(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
 
     return [[WKWebView alloc]init];
 }
 
-- 输入框
-
+#### 输入框
 -(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
 
     completionHandler(@"http");
 }
 
-- 确认框
-
+#### 确认框
 -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
 
     completionHandler(YES);
 }
 
-- 警告框
-
+#### 警告框
 -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
 
     NSLog(@"%@",message);
@@ -119,17 +104,15 @@
     [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
 }
 
-- WKScriptMessageHandler
-
+### WKScriptMessageHandler
 -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
 
     NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
 }
 
 
-# 创建新的控制器设置代理（解决不能释放的问题）
-
-@protocol WKDelegate <NSObject>
+### 创建新的控制器设置代理（解决不能释放的问题）
+@protocol WKDelegate \<NSObject\><br>
 
 -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
 
@@ -151,9 +134,9 @@
 }
 
 
-# 关于session 同步 cookies的问题
+### 关于session 同步 cookies的问题
 
-- 1.基本配置
+#### 1.基本配置
     NSMutableString *cookies = [NSMutableString string];
     WKUserScript * cookieScript = [[WKUserScript alloc] initWithSource:[cookies copy]
                                                          injectionTime:WKUserScriptInjectionTimeAtDocumentStart
@@ -167,9 +150,8 @@
     configuration.processPool = [[WKWebKitSupport sharedSupport] processPool];
     configuration.userContentController = userContentController;
 
-- 2.保存到本地
-// 在收到响应后，决定是否跳转
-
+#### 2.保存到本地
+// 在收到响应后，决定是否跳转<br>
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
     
     NSLog(@"%@",navigationResponse.response.URL.absoluteString);
@@ -186,7 +168,7 @@
     //decisionHandler(WKNavigationResponsePolicyCancel);
 }
 
-- 3.在开始请求时注入
+#### 3.在开始请求时注入
 
 NSURL *url = [NSURL URLWithString:urlString];
 NSMutableString *cookies = [NSMutableString string];
@@ -211,9 +193,8 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 // 加载请求
 [self.wk_webView loadRequest:requestObj];
 
-# 新增拨打电话和弹窗
-// 在发送请求之前，决定是否跳转
-
+### 新增拨打电话和弹窗
+// 在发送请求之前，决定是否跳转<br>
 -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
 
     NSLog(@"%@",navigationAction.request.URL.absoluteString);
@@ -246,8 +227,7 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
     //decisionHandler(WKNavigationActionPolicyCancel);
 }
 
-// 警告框
-
+#### 警告框
 -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
 
     NSLog(@"%@",message);
@@ -265,7 +245,7 @@ NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
 //    completionHandler();
 }
 
-// 确认框
+#### 确认框
 
 -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
 
