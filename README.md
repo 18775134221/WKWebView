@@ -27,111 +27,111 @@
     
 ## 常用的代理方法
 ### WKNavigationDelegate 方法较为常用
-#### 页面开始加载时调用 
--(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
+    #### 页面开始加载时调用 
+    -(void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation{
 
-#### 当内容开始返回时调用
--(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
-    
-}
+    }
 
-#### 页面加载完成之后调用
--(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
-    
-}
+    #### 当内容开始返回时调用
+    -(void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation{
 
-#### 页面加载失败时调用
--(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
+    }
 
-#### 接收到服务器跳转请求之后调用
--(void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
-    
-}
+    #### 页面加载完成之后调用
+    -(void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation{
 
-#### 在收到响应后，决定是否跳转
--(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
-    
-    NSLog(@"%@",navigationResponse.response.URL.absoluteString);
-    //允许跳转
-    decisionHandler(WKNavigationResponsePolicyAllow);
-    //不允许跳转
-    //decisionHandler(WKNavigationResponsePolicyCancel);
-}
+    }
 
-#### 在发送请求之前，决定是否跳转
--(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
-    
-    NSLog(@"%@",navigationAction.request.URL.absoluteString);
-    //允许跳转
-    decisionHandler(WKNavigationActionPolicyAllow);
-    //不允许跳转
-    //decisionHandler(WKNavigationActionPolicyCancel);
-}
+    #### 页面加载失败时调用
+    -(void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation{
+
+    }
+
+    #### 接收到服务器跳转请求之后调用
+    -(void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(WKNavigation *)navigation{
+
+    }
+
+    #### 在收到响应后，决定是否跳转
+    -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
+
+        NSLog(@"%@",navigationResponse.response.URL.absoluteString);
+        //允许跳转
+        decisionHandler(WKNavigationResponsePolicyAllow);
+        //不允许跳转
+        //decisionHandler(WKNavigationResponsePolicyCancel);
+    }
+
+    #### 在发送请求之前，决定是否跳转
+    -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
+
+        NSLog(@"%@",navigationAction.request.URL.absoluteString);
+        //允许跳转
+        decisionHandler(WKNavigationActionPolicyAllow);
+        //不允许跳转
+        //decisionHandler(WKNavigationActionPolicyCancel);
+    }
 
 ### WKUIDelegate
-#### 创建一个新的WebView
--(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
+    #### 创建一个新的WebView
+    -(WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures{
 
-    return [[WKWebView alloc]init];
-}
+        return [[WKWebView alloc]init];
+    }
 
-#### 输入框
--(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
+    #### 输入框
+    -(void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(nullable NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString * __nullable result))completionHandler{
 
-    completionHandler(@"http");
-}
+        completionHandler(@"http");
+    }
 
-#### 确认框
--(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
+    #### 确认框
+    -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL result))completionHandler{
 
-    completionHandler(YES);
-}
+        completionHandler(YES);
+    }
 
-#### 警告框
--(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+    #### 警告框
+    -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
 
-    NSLog(@"%@",message);
-    completionHandler();
-}
+        NSLog(@"%@",message);
+        completionHandler();
+    }
 
--(void)dealloc{
+    -(void)dealloc{
 
-    //这里需要注意，前面增加过的方法一定要remove掉。
-    [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
-}
+        //这里需要注意，前面增加过的方法一定要remove掉。
+        [userContentController removeScriptMessageHandlerForName:@"NativeMethod"];
+    }
 
 ### WKScriptMessageHandler
--(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+    -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
 
-    NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
-}
+        NSLog(@"name:%@\\\\n body:%@\\\\n frameInfo:%@\\\\n",message.name,message.body,message.frameInfo);
+    }
 
 
 ### 创建新的控制器设置代理（解决不能释放的问题）
-@protocol WKDelegate \<NSObject\><br>
+    @protocol WKDelegate \<NSObject\><br>
 
--(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
+    -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message;
 
-@end
+    @end
 
-@interface WKDelegateController : UIViewController <WKScriptMessageHandler>
+    @interface WKDelegateController : UIViewController <WKScriptMessageHandler>
 
-@property (weak , nonatomic) id<WKDelegate> delegate;
+    @property (weak , nonatomic) id<WKDelegate> delegate;
 
-@end
+    @end
 
-.m文件中的实现
+    .m文件中的实现
 
--(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
+    -(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message{
 
-    if ([self.delegate respondsToSelector:@selector(userContentController:didReceiveScriptMessage:)]) {
-        [self.delegate userContentController:userContentController didReceiveScriptMessage:message];
+        if ([self.delegate respondsToSelector:@selector(userContentController:didReceiveScriptMessage:)]) {
+            [self.delegate userContentController:userContentController didReceiveScriptMessage:message];
+        }
     }
-}
 
 
 ### 关于session 同步 cookies的问题
@@ -151,115 +151,115 @@
     configuration.userContentController = userContentController;
 
 #### 2.保存到本地
-// 在收到响应后，决定是否跳转<br>
--(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
-    
-    NSLog(@"%@",navigationResponse.response.URL.absoluteString);
-    NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
-    // 获取cookie,并设置到本地
-    NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
-    for (NSHTTPCookie *cookie in cookies) {
-        [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
-    }
-    
-    //允许跳转
-    decisionHandler(WKNavigationResponsePolicyAllow);
-    //不允许跳转
-    //decisionHandler(WKNavigationResponsePolicyCancel);
-}
+    // 在收到响应后，决定是否跳转<br>
+    -(void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler{
 
-#### 3.在开始请求时注入
-
-NSURL *url = [NSURL URLWithString:urlString];
-NSMutableString *cookies = [NSMutableString string];
-NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
-
-// 一般都只需要同步JSESSIONID,可视不同需求自己做更改
-NSString * JSESSIONID;
-// 获取本地所有的Cookie
-NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
-    for (NSHTTPCookie * cookie in tmp) {
-        if ([cookie.name isEqualToString:@"JSESSIONID"]) {
-            JSESSIONID = cookie.value;
-            break;
+        NSLog(@"%@",navigationResponse.response.URL.absoluteString);
+        NSHTTPURLResponse *response = (NSHTTPURLResponse *)navigationResponse.response;
+        // 获取cookie,并设置到本地
+        NSArray *cookies =[NSHTTPCookie cookiesWithResponseHeaderFields:[response allHeaderFields] forURL:response.URL];
+        for (NSHTTPCookie *cookie in cookies) {
+            [[NSHTTPCookieStorage sharedHTTPCookieStorage] setCookie:cookie];
         }
+
+        //允许跳转
+        decisionHandler(WKNavigationResponsePolicyAllow);
+        //不允许跳转
+        //decisionHandler(WKNavigationResponsePolicyCancel);
     }
- if (JSESSIONID.length) {
-      // 格式化Cookie
-      [cookies appendFormat:@"JSESSIONID=%@;",JSESSIONID];
-  }
-// 注入Cookie
-[requestObj setValue:cookies forHTTPHeaderField:@"Cookie"];
-// 加载请求
-[self.wk_webView loadRequest:requestObj];
+
+    #### 3.在开始请求时注入
+
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSMutableString *cookies = [NSMutableString string];
+    NSMutableURLRequest *requestObj = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+
+    // 一般都只需要同步JSESSIONID,可视不同需求自己做更改
+    NSString * JSESSIONID;
+    // 获取本地所有的Cookie
+    NSArray *tmp = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies];
+        for (NSHTTPCookie * cookie in tmp) {
+            if ([cookie.name isEqualToString:@"JSESSIONID"]) {
+                JSESSIONID = cookie.value;
+                break;
+            }
+        }
+     if (JSESSIONID.length) {
+          // 格式化Cookie
+          [cookies appendFormat:@"JSESSIONID=%@;",JSESSIONID];
+      }
+    // 注入Cookie
+    [requestObj setValue:cookies forHTTPHeaderField:@"Cookie"];
+    // 加载请求
+    [self.wk_webView loadRequest:requestObj];
 
 ### 新增拨打电话和弹窗
-// 在发送请求之前，决定是否跳转<br>
--(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
+    // 在发送请求之前，决定是否跳转<br>
+    -(void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler{
 
-    NSLog(@"%@",navigationAction.request.URL.absoluteString);
-    // 拨打电话
-    
-    NSURL *URL = navigationAction.request.URL;
-    NSString *scheme = [URL scheme];
-    UIApplication *app = [UIApplication sharedApplication];
-    // 打电话
-    if ([scheme isEqualToString:@"tel"]) {
-        if ([app canOpenURL:URL]) {
-            [app openURL:URL];
-            // 一定要加上这句,否则会打开新页面
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
+        NSLog(@"%@",navigationAction.request.URL.absoluteString);
+        // 拨打电话
+
+        NSURL *URL = navigationAction.request.URL;
+        NSString *scheme = [URL scheme];
+        UIApplication *app = [UIApplication sharedApplication];
+        // 打电话
+        if ([scheme isEqualToString:@"tel"]) {
+            if ([app canOpenURL:URL]) {
+                [app openURL:URL];
+                // 一定要加上这句,否则会打开新页面
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            }
         }
-    }
-    // 打开appstore
-    if ([URL.absoluteString containsString:@"ituns.apple.com"]) {
-        if ([app canOpenURL:URL]) {
-            [app openURL:URL];
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
+        // 打开appstore
+        if ([URL.absoluteString containsString:@"ituns.apple.com"]) {
+            if ([app canOpenURL:URL]) {
+                [app openURL:URL];
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            }
         }
+
+        //允许跳转
+        decisionHandler(WKNavigationActionPolicyAllow);
+        //不允许跳转
+        //decisionHandler(WKNavigationActionPolicyCancel);
     }
 
-    //允许跳转
-    decisionHandler(WKNavigationActionPolicyAllow);
-    //不允许跳转
-    //decisionHandler(WKNavigationActionPolicyCancel);
-}
+    #### 警告框
+    -(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
 
-#### 警告框
--(void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler{
+        NSLog(@"%@",message);
+        //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            completionHandler();
+        }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            completionHandler();
+        }]];
 
-    NSLog(@"%@",message);
-    //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        completionHandler();
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
-        completionHandler();
-    }]];
-    
-    [self presentViewController:alertController animated:YES completion:^{}];
-    // 要实现
-//    completionHandler();
-}
+        [self presentViewController:alertController animated:YES completion:^{}];
+        // 要实现
+    //    completionHandler();
+    }
 
-#### 确认框
+    #### 确认框
 
--(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
+    -(void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler {
 
-    //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        completionHandler(YES);
-    }]];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
-        completionHandler(NO);
-    }]];
-    
-    [self presentViewController:alertController animated:YES completion:^{}];
-    
-}
+        //  js 里面的alert实现，如果不实现，网页的alert函数无效  ,
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:message message:nil preferredStyle:UIAlertControllerStyleAlert];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+            completionHandler(YES);
+        }]];
+        [alertController addAction:[UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action){
+            completionHandler(NO);
+        }]];
+
+        [self presentViewController:alertController animated:YES completion:^{}];
+
+    }
 
 
